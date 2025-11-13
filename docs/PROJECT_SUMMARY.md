@@ -257,8 +257,8 @@ vsce package
 
 如有任何问题或建议，请通过以下方式联系：
 
-- **GitHub Issues**: (待创建仓库后补充)
-- **Email**: (待补充)
+- **GitHub Issues**: https://github.com/houzixiashanxiedaima/flutter-assets-generator-vscode/issues
+- **GitHub Repo**: https://github.com/houzixiashanxiedaima/flutter-assets-generator-vscode
 - **项目文档**: 所有问题和决策请参考 `docs/` 目录下的文档
 
 ---
