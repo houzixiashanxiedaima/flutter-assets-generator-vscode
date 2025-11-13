@@ -1,0 +1,123 @@
+{
+  "name": "flutter-assets-generator",
+  "displayName": "Flutter Assets Generator",
+  "description": "Automatically generate Dart asset references from pubspec.yaml configuration",
+  "version": "0.1.0",
+  "publisher": "your-publisher-name",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "flutter",
+    "dart",
+    "assets",
+    "generator",
+    "code generation"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/pubspec.yaml"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "flutter-assets-generator.generate",
+        "title": "Flutter: Generate Assets"
+      },
+      {
+        "command": "flutter-assets-generator.addToAssets",
+        "title": "Flutter: Add to Assets"
+      },
+      {
+        "command": "flutter-assets-generator.openSettings",
+        "title": "Flutter: Open Assets Generator Settings"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "flutter-assets-generator.addToAssets",
+          "when": "explorerResourceIsFolder",
+          "group": "flutter@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Flutter Assets Generator",
+      "properties": {
+        "flutter-assets-generator.autoDetection": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically regenerate assets when files change"
+        },
+        "flutter-assets-generator.outputDir": {
+          "type": "string",
+          "default": "generated",
+          "description": "Output directory relative to lib folder"
+        },
+        "flutter-assets-generator.outputFilename": {
+          "type": "string",
+          "default": "assets",
+          "description": "Output filename (without .dart extension)"
+        },
+        "flutter-assets-generator.className": {
+          "type": "string",
+          "default": "Assets",
+          "description": "Generated class name"
+        },
+        "flutter-assets-generator.namingStyle": {
+          "type": "string",
+          "default": "camelCase",
+          "enum": ["camelCase", "snake_case", "PascalCase"],
+          "description": "Naming style for generated constants"
+        },
+        "flutter-assets-generator.namedWithParent": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include parent directory name in variable names"
+        },
+        "flutter-assets-generator.filenameSplitPattern": {
+          "type": "string",
+          "default": "[-_]",
+          "description": "Regex pattern for splitting filename parts"
+        },
+        "flutter-assets-generator.leadingWithPackageName": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prefix paths with packages/{name}/ for Flutter packages"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^20.0.0",
+    "@types/js-yaml": "^4.0.5",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.40.0",
+    "typescript": "^5.1.0"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "js-yaml": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/flutter-assets-generator-vscode"
+  },
+  "license": "MIT"
+}
