@@ -29,19 +29,27 @@
         "title": "Flutter: Generate Assets"
       },
       {
+        "command": "flutter-assets-generator.generateAll",
+        "title": "Flutter: Generate Assets for All Projects"
+      },
+      {
         "command": "flutter-assets-generator.addToAssets",
         "title": "Flutter: Add to Assets"
       },
       {
         "command": "flutter-assets-generator.openSettings",
         "title": "Flutter: Open Assets Generator Settings"
+      },
+      {
+        "command": "flutter-assets-generator.showOutput",
+        "title": "Flutter: Show Assets Generator Output"
       }
     ],
     "menus": {
       "explorer/context": [
         {
           "command": "flutter-assets-generator.addToAssets",
-          "when": "explorerResourceIsFolder",
+          "when": "explorerResourceIsFolder || resourceExtname =~ /\\.(png|jpg|jpeg|gif|webp|svg|ttf|otf|mp3|mp4|json|txt)$/",
           "group": "flutter@1"
         }
       ]
@@ -53,6 +61,16 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically regenerate assets when files change"
+        },
+        "flutter-assets-generator.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notifications for generation results"
+        },
+        "flutter-assets-generator.enableHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable hover tooltips for asset constants"
         },
         "flutter-assets-generator.outputDir": {
           "type": "string",
@@ -72,7 +90,11 @@
         "flutter-assets-generator.namingStyle": {
           "type": "string",
           "default": "camelCase",
-          "enum": ["camelCase", "snake_case", "PascalCase"],
+          "enum": [
+            "camelCase",
+            "snake_case",
+            "PascalCase"
+          ],
           "description": "Naming style for generated constants"
         },
         "flutter-assets-generator.namedWithParent": {
@@ -102,18 +124,23 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0",
-    "@types/node": "^20.0.0",
+    "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.5",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.40.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.1.0"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21"
   },
   "repository": {
     "type": "git",
