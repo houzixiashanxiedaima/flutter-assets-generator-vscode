@@ -4,6 +4,8 @@ import { AssetGenerator } from './core/AssetGenerator';
 import { AssetWatcher } from './core/AssetWatcher';
 import { generateCommand, generateAllCommand } from './commands/GenerateCommand';
 import { addToAssetsCommand } from './commands/AddToAssetsCommand';
+import { AssetHoverProvider } from './providers/AssetHoverProvider';
+import { AssetDefinitionProvider } from './providers/AssetDefinitionProvider';
 
 let outputChannel: vscode.OutputChannel;
 const watchers: Map<string, AssetWatcher> = new Map();
@@ -65,6 +67,25 @@ export async function activate(context: vscode.ExtensionContext) {
     openSettingsCmd,
     showOutputCmd
   );
+
+  // Register providers for Dart files
+  const userSettings = ConfigManager.getUserSettings();
+
+  if (userSettings.enableHover) {
+    const hoverProvider = vscode.languages.registerHoverProvider(
+      { language: 'dart', scheme: 'file' },
+      new AssetHoverProvider()
+    );
+    context.subscriptions.push(hoverProvider);
+    outputChannel.appendLine('Hover provider registered');
+  }
+
+  const definitionProvider = vscode.languages.registerDefinitionProvider(
+    { language: 'dart', scheme: 'file' },
+    new AssetDefinitionProvider()
+  );
+  context.subscriptions.push(definitionProvider);
+  outputChannel.appendLine('Definition provider registered');
 
   // Setup file watchers for auto-detection
   await setupWatchers();

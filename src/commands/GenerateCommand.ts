@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { ConfigManager } from '../config/ConfigManager';
 import { AssetGenerator } from '../core/AssetGenerator';
+import { ErrorHandler } from '../utils/ErrorHandler';
 
 /**
  * Generate assets command implementation
@@ -10,14 +11,18 @@ export async function generateCommand(
 ): Promise<void> {
   const generator = new AssetGenerator(outputChannel);
   const userSettings = ConfigManager.getUserSettings();
+  const errorHandler = new ErrorHandler(outputChannel);
 
   try {
     // Get current Flutter project
     const projectRoot = await ConfigManager.getCurrentFlutterProject();
 
     if (!projectRoot) {
-      vscode.window.showErrorMessage(
-        'No Flutter project found. Please open a Flutter project first.'
+      const error = 'No Flutter project found. Please open a Flutter project first.';
+      errorHandler.handleError(
+        error,
+        ErrorHandler.detectErrorType(error),
+        userSettings.showNotifications
       );
       return;
     }
@@ -39,14 +44,19 @@ export async function generateCommand(
         // Show result
         generator.showResult(result, userSettings.showNotifications);
 
-        // Show output channel
-        outputChannel.show(true);
+        // Show output channel if there were issues
+        if (!result.success || (result.conflicts && result.conflicts > 0)) {
+          outputChannel.show(true);
+        }
       }
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    vscode.window.showErrorMessage(`Failed to generate assets: ${message}`);
-    outputChannel.appendLine(`\n❌ Error: ${message}`);
+    const errorType = ErrorHandler.detectErrorType(error instanceof Error ? error : String(error));
+    errorHandler.handleError(
+      error instanceof Error ? error : String(error),
+      errorType,
+      userSettings.showNotifications
+    );
   }
 }
 
@@ -58,6 +68,7 @@ export async function generateAllCommand(
 ): Promise<void> {
   const generator = new AssetGenerator(outputChannel);
   const userSettings = ConfigManager.getUserSettings();
+  const errorHandler = new ErrorHandler(outputChannel);
 
   try {
     // Show progress
@@ -82,8 +93,11 @@ export async function generateAllCommand(
       }
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    vscode.window.showErrorMessage(`Failed to generate assets: ${message}`);
-    outputChannel.appendLine(`\n❌ Error: ${message}`);
+    const errorType = ErrorHandler.detectErrorType(error instanceof Error ? error : String(error));
+    errorHandler.handleError(
+      error instanceof Error ? error : String(error),
+      errorType,
+      userSettings.showNotifications
+    );
   }
 }

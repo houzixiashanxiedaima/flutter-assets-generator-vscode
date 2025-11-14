@@ -3,6 +3,7 @@ import { ConfigManager } from '../config/ConfigManager';
 import { AssetScanner } from './AssetScanner';
 import { NamingConverter } from '../utils/NamingConverter';
 import { CodeGenerator } from './CodeGenerator';
+import { ErrorHandler } from '../utils/ErrorHandler';
 
 /**
  * Result of asset generation
@@ -22,9 +23,11 @@ export interface GenerationResult {
  */
 export class AssetGenerator {
   private outputChannel: vscode.OutputChannel;
+  private errorHandler: ErrorHandler;
 
   constructor(outputChannel: vscode.OutputChannel) {
     this.outputChannel = outputChannel;
+    this.errorHandler = new ErrorHandler(outputChannel);
   }
 
   /**
@@ -128,14 +131,10 @@ export class AssetGenerator {
         conflicts: conflicts.length,
       };
     } catch (error) {
+      const errorType = ErrorHandler.detectErrorType(error instanceof Error ? error : String(error));
+      this.errorHandler.handleError(error instanceof Error ? error : String(error), errorType, false);
+
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.outputChannel.appendLine(`\n❌ Error: ${errorMessage}`);
-
-      if (error instanceof Error && error.stack) {
-        this.outputChannel.appendLine('\nStack trace:');
-        this.outputChannel.appendLine(error.stack);
-      }
-
       return {
         success: false,
         message: `Failed to generate assets: ${errorMessage}`,
